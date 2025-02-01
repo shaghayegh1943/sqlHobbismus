@@ -133,7 +133,91 @@ create table employee
 id int not null auto_increment primary key,
 name varchar(30)
 );
+
 insert into employee values(default,'Nina Kumari');
 insert into employee values(default,'Abrar Khan');
 insert into employee values(default,'Irene Costa');
+
+ select sal.order_id,sal.quantity,sal.status,sal.order_date,
+ prod.code,prod.name,prod.price, prod.release_date
+ from sales_order as sal
+ inner join products as prod
+ on sal.product_id = prod.code
+ where sal.status like '%completed%';
  
+ #wie viele produkte wurden verkauf 
+ select sum(quantity) as total_sold_products from sales_order;
+insert into demo.sales_order
+(
+order_id,
+order_date,
+quantity,
+product_id,
+customer_id,
+emp_id,
+status
+) 
+values
+(default,STR_TO_DATE('15-09-2024','%d-%m-%Y'), 3,2,2,3,'Pending');
+
+insert into demo.sales_order
+(
+order_id,
+order_date,
+quantity,
+product_id,
+customer_id,
+emp_id,
+status
+) 
+values
+(default,STR_TO_DATE('15-09-2024','%d-%m-%Y'), 1,3,3,1,'pending');
+select * 
+from sales_order
+where status not in ('Pending');
+
+select * 
+from sales_order
+where lower(status)='pending';
+
+select so.order_date,so.quantity,so.product_id,po.name,po.price,
+cus.name, so.quantity*po.price as total_FEE from 
+sales_order as so inner join 
+customers as cus 
+on so.customer_id = cus.customer_id
+inner join products as po
+on so.product_id = po.code
+where lower(so.status)='completed'
+order by so.order_date;
+
+select status, count(*) as total from sales_order
+group by status;
+select * from sales_order;
+####case when subQuery
+select status, case status when 'pending'
+				then 'Pending'
+                else status
+                end  as updated_status 
+from sales_order;
+
+select status, count(*) as total 
+from (select status, case status when 'pending'
+				then 'Pending'
+                else status
+                end  as updated_status 
+from sales_order) ql
+group by status;
+
+#find total product purchased by each customer
+select cus.name,sum(sa.quantity) from sales_order as sa
+join customers as cus 
+on sa.customer_id=cus.customer_id
+group by cus.name;
+
+
+##winodow function or analytic function
+
+
+
+
+
